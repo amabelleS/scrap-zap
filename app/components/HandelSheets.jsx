@@ -46,7 +46,7 @@ function HandelSheets() {
     // 4. the place of my store from the previous check
 
     //Promise.all...:TODO
-    const stores = await scrapeZapWebsite(paired[0])
+    const stores = await scrapeZapWebsite(paired[2])
     console.log("🚀 ~ file: HandelSheets.jsx:63 ~ handleFetchData ~ stores:", stores)
     
       // Manipulate:
