@@ -7,16 +7,32 @@ import scrapeZapWebsite from '@/lib/scrapeZapWebsite';
 
 function HandelSheets() {
   const [spreadsheetUrl, setSpreadsheetUrl] = useState('');
+  const [toggleDialog, setToggleDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
   // const navigate = useNavigate();
 
+//   const openDialog = () => {
+    
+//   }
+//   const closeDialog = () => {
+//     setToggleDialog(false)
+//   }
   const handleUrlChange = (e) => {
     setSpreadsheetUrl(e.target.value);
   };
 
   const handleFetchData = async () => {
+    setIsLoading(true)
+    // setToggleDialog(false)
 
     // error handeling for valid url - todo!!
+    if (spreadsheetUrl === '') {
+        alert('boo')
+        // setToggleDialog(true)
+        return
+    }
 
     try {
       const response = await fetch(spreadsheetUrl);
@@ -35,6 +51,7 @@ function HandelSheets() {
             (cell[0].includes("B") && cell[0] !== 'B1' && cell[0] !== 'B2') ||
             cell[0].includes("D") && cell[0] !== 'D1' && cell[0] !== 'D2')
 
+    // paired is an array of pairs containing the product names and shop names
       const paired = pairElements(productsNamesAndMyShopName);
       console.log("🚀 ~ file: HandelSheets.jsx:51 ~ handleFetchData ~ pairedObject:", paired)
     
@@ -46,8 +63,14 @@ function HandelSheets() {
     // 4. the place of my store from the previous check
 
     //Promise.all...:TODO
-    const stores = await scrapeZapWebsite(paired[2])
-    console.log("🚀 ~ file: HandelSheets.jsx:63 ~ handleFetchData ~ stores:", stores)
+    const promises = paired.map(async (pair) => {
+        const stores = await scrapeZapWebsite(pair);
+        return stores;
+    });
+
+    const allStores = await Promise.all(promises);
+    console.log('🚀 ~ handleFetchData ~ allStores:', allStores);
+
     
       // Manipulate:
       const cell = {t:'2', v: 22, s: {
@@ -136,7 +159,7 @@ function HandelSheets() {
           onChange={handleUrlChange}
           placeholder='Enter link to googlesheet'
         />
-        {/* <dialog open>Pls enter valid url</dialog> */}
+        {/* <dialog open={toggleDialog}>Pls enter valid url</dialog> */}
         <button
          className="p-2 text-xl rounded-xl bg-slate-300 ml-2 font-bold"
          onClick={handleFetchData}
