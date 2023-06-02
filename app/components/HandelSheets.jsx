@@ -1,24 +1,27 @@
 import { useState } from 'react';
 import { read, write } from 'xlsx';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 // import { revalidatePath } from 'next/cache';
 import pairElements from '@/lib/pairElements';
 import scrapeZapWebsite from '@/lib/scrapeZapWebsite';
+import { getPrevProductsIndexesFromLocalStorage } from '@/lib/handelLocalStorage';
 
-function HandelSheets() {
+let ShekelFormater = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'ILS',
+});
+
+function HandelSheets({ updateProducts }) {
   const [spreadsheetUrl, setSpreadsheetUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [products, setProduct] = useState([])
-
-  const router = useRouter();
 
   const handleUrlChange = (e) => {
     setSpreadsheetUrl(e.target.value);
   };
-
+  
   const handleFetchData = async () => {
     setIsLoading(true);
-
+    
     if (spreadsheetUrl === '') {
       alert('Please enter a valid URL');
       setIsLoading(false);
@@ -52,16 +55,16 @@ function HandelSheets() {
       // 1. The price of my store.
       // 2. Name & prices for top 5 by lowest price
       // 3. The placement of my store in the current check
-      // 4. The place of my store from the previous check
+      // 4. The place of my store from the previous check - checked from localStorage
       const promises = paired.map(async (pair) => {
         const storesPromises = await scrapeZapWebsite(pair);
         return storesPromises;
       });
 
       const allProducts = await Promise.all(promises);
-      console.log("🚀 ~ file: HandelSheets.jsx:61 ~ handleFetchData ~ allProducts:", allProducts)
-      setProduct(allProducts);
-
+      // console.log("🚀 ~ file: HandelSheets.jsx:65 ~ handleFetchData ~ allProducts:", allProducts)
+      const prevProductsIndexes = getPrevProductsIndexesFromLocalStorage();
+        // console.log("🚀 ~ file: HandelSheets.jsx:66 ~ handleFetchData ~ prevProductsIndexes:", prevProductsIndexes)
         // Manipulate:
     //   const cell = {
     //     t: '2',
@@ -86,12 +89,25 @@ function HandelSheets() {
     //   const url = URL.createObjectURL(blob);
 
       // Manipulate:
-      const sheetToUpdate = workbook.Sheets[workbook.SheetNames[0]];
+    //   const sheetToUpdate = workbook.Sheets[workbook.SheetNames[0]];
 
       // Update targetStore.siteId, totalPrice, and store names for each product
+      // Function to retrieve the previous song ratings from local storage
+      
+      // const prevProducts = JSON.parse(localStorage.getItem('products')) | [];
+
       allProducts.forEach((product, index) => {
         const { targetStore, firstStores } = product;
+        // console.log("🚀 ~ file: HandelSheets.jsx:100 ~ allProducts.forEach ~ targetStore:", targetStore)
+        const { siteName } = targetStore;
+        const prevIndex = prevProductsIndexes[siteName] || 0
+        console.log("🚀 ~ file: HandelSheets.jsx:101 ~ allProducts.forEach ~ siteName:", prevProductsIndexes[siteName])
+        console.log("🚀 ~ file: HandelSheets.jsx:104 ~ allProducts.forEach ~ prevIndex:", prevIndex)
         const cellRow = 3 + index;
+
+        // Check if my store current position/index changed in zap:
+        const isChangedIndex = targetStore.storeIndex !== prevIndex
+        console.log("🚀 ~ file: HandelSheets.jsx:109 ~ allProducts.forEach ~ isChangedIndex:", isChangedIndex)
 
         // In the first loop/product we are updating the second row in the xslx file, cells C3, E3 ... P3, O3
         // In the second loop we are updating the third row in the xslx file, cells C3, E4 ... P4, O4
@@ -108,7 +124,7 @@ function HandelSheets() {
         const myPriceCell = `E${cellRow}`;
         const myPriceCellObj = {
             t: 's',
-            v: targetStore.totalPrice
+            v: ShekelFormater.format(targetStore.totalPrice)
         }
         worksheet[myPriceCell] = myPriceCellObj;
     
@@ -140,7 +156,7 @@ function HandelSheets() {
             const storePriceCell = `${storePriceColumn}${cellRow}`;
             const storePriceObj = {
                 t: 's',
-                v: store.totalPrice
+                v: ShekelFormater.format(store.totalPrice),
             }
             worksheet[storePriceCell] = storePriceObj;
         });
@@ -153,9 +169,97 @@ function HandelSheets() {
         }
         worksheet[myStoreIndexCell] = myStoreIndexCellObj;
 
-        // Update targetStore.storeIndex (origin array sorted by price accending ) - In the current run of the program
-        // TODO!
+        // Update targetStore.previous index (origin array sorted by price accending ) - In the current run of the program
+        // +Update row color
+        const rowColor = isChangedIndex ? 'FFCCCB' : ''; // Set the desired row color
+        const myStorePrevIndexCell = `Q${cellRow}`;
+
+        const myStorePrevIndexCellObj = {
+            t: 's',
+            v: `${prevIndex}${isChangedIndex ? ' Change!' : ''}`,
+            fill: {
+              type: 'pattern',
+              patternType: 'solid',
+              // fgColor: { rgb: rowColor },
+              bgColor: {rgb: rowColor}
+            }
+        }
+        worksheet[myStorePrevIndexCell] = myStorePrevIndexCellObj;
+               
+        // Color diff - TODO!
+
     });
+
+    //
+    //   products.forEach((product, index) => {
+    //     // const { targetStore, firstStores } = product;
+    //     const cellRow = 3 + index;
+
+    //     // In the first loop/product we are updating the second row in the xslx file, cells C3, E3 ... P3, O3
+    //     // In the second loop we are updating the third row in the xslx file, cells C3, E4 ... P4, O4
+
+    //     // Update link to product:
+    //     const linkCell = `C${cellRow}`;
+    //     const linkCellObj = {
+    //         t: 's',
+    //         v: product.link
+    //         // v: `https://www.zap.co.il/model.aspx?modelid=${product.modelid}`
+    //     }
+    //     worksheet[linkCell] = linkCellObj;
+    
+    //     // Update targetStore.totalPrice
+    //     const myPriceCell = `E${cellRow}`;
+    //     const myPriceCellObj = {
+    //         t: 's',
+    //         v: product.myStorePrice
+    //     }
+    //     worksheet[myPriceCell] = myPriceCellObj;
+    
+    //     // Update firstStores 
+    //     // firstStores.forEach((store, storeIndex) => {
+    //         // Calculate the ASCII code for the store name column
+    //         const storeNameColumn = String.fromCharCode(70 + storeIndex * 2); // ASCII code for 'F' is 70
+    //         const storePriceColumn = String.fromCharCode(71 + storeIndex * 2); 
+
+    //         // Update store name at cellRow
+    //         // First lopp: F3
+    //         // 2. H-cellRow
+    //         // 3. J-cellRow
+    //         // 4. L-cellRow
+    //         // 5. N-cellRow
+    //         const storeNameCell = `${storeNameColumn}${cellRow}`;
+    //         const storeNameCellObj = {
+    //             t: 's',
+    //             v: store.siteName
+    //         }
+    //         worksheet[storeNameCell] = storeNameCellObj;
+
+    //         // Update store price at cellRow
+    //         // First lopp: G3
+    //         // 2. I-cellRow
+    //         // 3. K-cellRow
+    //         // 4. M-cellRow
+    //         // 5. O-cellRow
+    //         const storePriceCell = `${storePriceColumn}${cellRow}`;
+    //         const storePriceObj = {
+    //             t: 's',
+    //             v: store.totalPrice
+    //         }
+    //         worksheet[storePriceCell] = storePriceObj;
+    //     // });
+    
+    //     // Update targetStore.storeIndex (origin array sorted by price accending ) - In the current run of the program
+    //     const myStoreIndexCell = `P${cellRow}`;
+    //     const myStoreIndexCellObj = {
+    //         t: 's',
+    //         v: targetStore.storeIndex
+    //     }
+    //     worksheet[myStoreIndexCell] = myStoreIndexCellObj;
+
+    //     // Update targetStore.storeIndex (origin array sorted by price accending ) - In the current run of the program
+    //     // TODO!
+    //     // Color diff - TODO!
+    // });
 
       // Convert the workbook back to XLSX
       const updatedArrayBuffer = write(workbook, { type: 'array', bookType: 'xlsx' });
@@ -165,6 +269,34 @@ function HandelSheets() {
         [updatedArrayBuffer],
         { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
       );
+
+      // Map to finalProducts
+      const finalProducts = allProducts.map((product, i) => {
+        const firstStores = product.firstStores;
+        const storeProperties = {};
+      
+        firstStores.forEach((store, index) => {
+          const storeIndex = index + 1;
+          storeProperties[`storeNameAtIndex${storeIndex}`] = store.siteName;
+          storeProperties[`storePriceAtIndex${storeIndex}`] = ShekelFormater.format(store.totalPrice);
+        });
+      
+        return {
+          title: product.targetStore.productName,
+          link: `https://www.zap.co.il/model.aspx?modelid=${product.targetStore.modelid}`,
+          myStoreName: product.targetStore.siteName,
+          myStorePrice: ShekelFormater.format(product.targetStore.totalPrice),
+          currentIndex: product.targetStore.storeIndex,
+          prevIndex: prevProductsIndexes[product.targetStore.siteName],
+          ...storeProperties,
+        };
+      });
+
+      // Save to
+      updateProducts(finalProducts);
+
+      // localStorage.setItem('products', JSON.stringify(finalProducts));
+
       const url = URL.createObjectURL(blob);
 
       if (url) {
