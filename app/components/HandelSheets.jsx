@@ -177,14 +177,28 @@ function HandelSheets({ updateProducts }) {
         const myStorePrevIndexCellObj = {
             t: 's',
             v: `${prevIndex}${isChangedIndex ? ' Change!' : ''}`,
-            fill: {
-              type: 'pattern',
-              patternType: 'solid',
-              // fgColor: { rgb: rowColor },
-              bgColor: {rgb: rowColor}
+            s: {
+              fill: {
+                type: 'pattern',
+                patternType: 'solid',
+                // fgColor: { rgb: rowColor },
+                bgColor: {rgb: rowColor}
+              }
             }
         }
+
         worksheet[myStorePrevIndexCell] = myStorePrevIndexCellObj;
+        // const cellToUpdate = worksheet[myStorePrevIndexCell]; // Get the cell object
+
+        // Update the cell style with the desired row color
+        worksheet[myStorePrevIndexCell].s = {
+          fill: {
+            type: 'pattern',
+            patternType: 'solid',
+            // fgColor: { rgb: rowColor },
+            bgColor: {rgb: rowColor}
+          }
+        };
                
         // Color diff - TODO!
 

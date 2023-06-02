@@ -84,7 +84,15 @@ const TableHeader = () => {
           </th>
           <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
           {/* <td class="px-6 py-4"> */}
-            {product.link}
+          <a 
+              href={product.link}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={product.title}
+              title={`Open ${product.title} in a new tab`}
+              >
+              {product.link}
+          </a>
           </td>
           <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
             {product.myStoreName}
