@@ -1,0 +1,33 @@
+/* .dialog {
+  z-index: 10;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: green;
+  border: none;
+  border-radius: 1rem;
+} */
+
+/* .dialog::backdrop {
+  background-color: hsla(247, 48%, 41%, 0.852);
+} */
+
+.dialog {
+    /* width: 100%; */
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* align-items: center; */
+    /* justify-content: center; */
+    /* border: 1px solid blue; */
+    /* border-radius: 1rem; */
+}
+
+/* .dialog button {
+    background: rgb(30 41 59);
+    color: rgb(243 244 246);
+    border: 1px solid rgb(30 41 59);;
+    border-radius: 0.6rem;
+    margin-top: 0.42rem;
+    font-weight: bold;
+} */

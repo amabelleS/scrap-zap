@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* dialog {
+  z-index: 10;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: green;
+  border: none;
+  border-radius: 1rem;
+} */
+
+dialog::backdrop {
+  background-color: rgba(203, 213, 225, 50%);
+}
+
 /* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

@@ -6,6 +6,8 @@ import pairElements from '@/lib/pairElements';
 import scrapeZapWebsite from '@/lib/scrapeZapWebsite';
 import { getPrevProductsIndexesFromLocalStorage } from '@/lib/handelLocalStorage';
 
+import styles from './HandelSheets.module.css'
+
 let ShekelFormater = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'ILS',
@@ -14,7 +16,6 @@ let ShekelFormater = new Intl.NumberFormat('en-US', {
 function HandelSheets({ updateProducts }) {
   const [spreadsheetUrl, setSpreadsheetUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isOpened, setIsOpened] = useState(false);
 
   const modalRef = useRef()
 
@@ -253,9 +254,15 @@ function HandelSheets({ updateProducts }) {
       >
         {isLoading ? 'Uploading & Comparing...' : 'Upload & Compare in Zap'}
       </button>
-      <dialog ref={modalRef} style={{width: '14rem', height: '5rem'}}>
-        <p>Please enter valid url</p>
-        <button onClick={onCloseModal} >Close</button>
+      <dialog ref={modalRef} className='bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4' role="alert">
+      {/* <dialog ref={modalRef} style={{borderRadius: '0.6rem'}}> */}
+        {/* <div className='flex justify-around'>  */}
+        <p className='font-bold'>Please Enter a Valid URL</p>
+        <button onClick={onCloseModal} className='btn font-bold border border-orange-700 my-2 py-1 px-4 rounded'>
+          <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+          {/* Close */}
+        </button>
+        {/* </div> */}
       </dialog>
     </div>
   );
