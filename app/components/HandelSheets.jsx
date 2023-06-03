@@ -6,7 +6,7 @@ import pairElements from '@/lib/pairElements';
 import scrapeZapWebsite from '@/lib/scrapeZapWebsite';
 import { getPrevProductsIndexesFromLocalStorage } from '@/lib/handelLocalStorage';
 
-import styles from './HandelSheets.module.css'
+// import styles from './HandelSheets.module.css'
 
 let ShekelFormater = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -26,6 +26,19 @@ function HandelSheets({ updateProducts }) {
   const onCloseModal = () => {
     modalRef.current?.close()
   }
+
+  // const onCloseModal = (e) => {
+  //   const dialogDimensions = modalRef.getBoundingClientRect()
+  //   if (
+  //     e.clientX < dialogDimensions.left ||
+  //     e.clientX > dialogDimensions.right ||
+  //     e.clientY < dialogDimensions.top ||
+  //     e.clientY > dialogDimensions.bottom
+  //   ) {
+  //     // dialog.close()
+  //     modalRef.current?.close()
+  //   }
+  // }
   
   const handleFetchData = async () => {
     setIsLoading(true);
@@ -230,12 +243,12 @@ function HandelSheets({ updateProducts }) {
         link.click();
       }
 
-      setIsLoading(false);
+      // setIsLoading(false);
     //   setSpreadsheetUrl('');
     } catch (error) {
       console.error('Error fetching or manipulating the file:', error);
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -255,7 +268,6 @@ function HandelSheets({ updateProducts }) {
         {isLoading ? 'Uploading & Comparing...' : 'Upload & Compare in Zap'}
       </button>
       <dialog ref={modalRef} className='bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4' role="alert">
-      {/* <dialog ref={modalRef} style={{borderRadius: '0.6rem'}}> */}
         {/* <div className='flex justify-around'>  */}
         <p className='font-bold'>Please Enter a Valid URL</p>
         <button onClick={onCloseModal} className='btn font-bold border border-orange-700 my-2 py-1 px-4 rounded'>

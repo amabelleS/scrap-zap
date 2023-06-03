@@ -1,4 +1,4 @@
-// 'use client'
+import { useEffect, useMemo, useState } from "react";
 
 // Table headers:
 const TableHeader = () => {
@@ -106,21 +106,32 @@ const TableHeader = () => {
   };
 
 const Products = ({ products }) => {
+console.log("🚀 ~ file: Products.jsx:107 ~ Products ~ products:", products)
+const [isChangedProducts, setIsChangedProducts] = useState(false);
 
+useEffect(() => {
+  products?.length > 0 ? setIsChangedProducts(true) : setIsChangedProducts(false);
+}, [products]);
+
+if (!isChangedProducts) {
   return (
+    <h3 className="mt-12 mb-12 text-2xl text-center text-white font-bold">No alterations observed in the products👌</h3>
+  ) 
+}
+
+return (
     <div>
         <h3 className="mt-12 mb-12 text-2xl text-center text-white font-bold">Prodacts🛒</h3>
         {/* <div className="inline-block overflow-hidden min-w-full py-2 sm:px-6 lg:px-8"> */}
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        {/* <table className='min-w-full text-left text-sm font-light'> */}
-        <table className='w-full text-sm text-left text-gray-500 dark:text-gray-400'>
+          <table className='w-full text-sm text-left text-gray-500 dark:text-gray-400'>
             <tbody>
               <tr className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'>
                 <TableHeader/>
               </tr>
               {products && <TableRows products={products}/>}
             </tbody>
-        </table>
+         </table>
         </div>
     </div>
   )
