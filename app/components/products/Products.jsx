@@ -65,7 +65,8 @@ const TableHeader = () => {
       '5th Store Name',
       '5th Store Price',
       'Current Placement',
-      'Previous Placement'
+      'Previous Placement',
+      'Email Store'
     ];
     return headers.map((product, i) => {
       return (
@@ -135,6 +136,17 @@ const TableHeader = () => {
           </td>
           <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
             {product.prevIndex}
+          </td>
+          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          <a 
+              href={`mailto:${product.storeEmail}?subject=Zap Rating Update!! The Position of ${product.myStoreName} Has Changed!&body=Your pervious position in zap website was ${product.prevIndex} and now it has changed to ${product.currentIndex}`}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={product.storeEmail}
+              title={`Open ${product.storeEmail} in a new tab`}
+              >
+              {product.storeEmail}
+          </a>
           </td>
         </tr>
       );
