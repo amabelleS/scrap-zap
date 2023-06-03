@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { read, write } from 'xlsx';
 // import { useRouter } from 'next/navigation';
 // import { revalidatePath } from 'next/cache';
@@ -14,16 +14,25 @@ let ShekelFormater = new Intl.NumberFormat('en-US', {
 function HandelSheets({ updateProducts }) {
   const [spreadsheetUrl, setSpreadsheetUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpened, setIsOpened] = useState(false);
+
+  const modalRef = useRef()
 
   const handleUrlChange = (e) => {
     setSpreadsheetUrl(e.target.value);
   };
+
+  const onCloseModal = () => {
+    modalRef.current?.close()
+  }
   
   const handleFetchData = async () => {
     setIsLoading(true);
     
+    // console.log("🚀 ~ file: HandelSheets.jsx:33 ~ handleFetchData ~ modalRef:", modalRef)
     if (spreadsheetUrl === '') {
-      alert('Please enter a valid URL');
+      // alert('Please enter a valid URL');
+      modalRef.current?.showModal();
       setIsLoading(false);
       return;
     }
@@ -244,6 +253,10 @@ function HandelSheets({ updateProducts }) {
       >
         {isLoading ? 'Uploading & Comparing...' : 'Upload & Compare in Zap'}
       </button>
+      <dialog ref={modalRef} style={{width: '14rem', height: '5rem'}}>
+        <p>Please enter valid url</p>
+        <button onClick={onCloseModal} >Close</button>
+      </dialog>
     </div>
   );
 }
