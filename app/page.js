@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 import HandelSheets from './components/HandelSheets'
+import HandelSheetsWithEcxel from './components/HandelSheetsWithEcxel';
 import Products from './components/products/Products';
 import { storeCurrentProductIndexesToLocalStorage, getPrevProductsIndexesFromLocalStorage } from '@/lib/handelLocalStorage';
 
@@ -41,8 +42,7 @@ export default function Home() {
     setProducts(products);
   };
 
-  useEffect(() => {
-    // setFilteredProducts(products.filter((p) => p.currentIndex !== p.prevIndex))    
+  useEffect(() => {   
     console.log("🚀 ~ file: page.js:51 ~ Home ~ products:", products)
   }, [products])
   
@@ -50,6 +50,7 @@ export default function Home() {
     <main className={`px-6 mx-auto`}>
     {/* <main className={`${inter.className} flex min-h-screen flex-col items-center justify-around p-24`}> */}
       <h1 className="mt-12 mb-12 text-3xl text-center text-white font-bold">Zap-Compare🪄</h1>
+      {/* <HandelSheetsWithEcxel updateProducts={updateProducts}/> */}
       <HandelSheets updateProducts={updateProducts}/>
       {/* Display products - filtered by ones who changed their position in the zap list */}
       <Products products={filteredProducts}/>

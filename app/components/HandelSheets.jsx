@@ -6,17 +6,17 @@ import pairElements from '@/lib/pairElements';
 import scrapeZapWebsite from '@/lib/scrapeZapWebsite';
 import { getPrevProductsIndexesFromLocalStorage } from '@/lib/handelLocalStorage';
 
-// import styles from './HandelSheets.module.css'
-
 let ShekelFormater = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'ILS',
 });
 
 function HandelSheets({ updateProducts }) {
+  // spreadSheetUrl is the url of the spreadsheet that the user enters.
   const [spreadsheetUrl, setSpreadsheetUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  // A simple modal with the dialog element to alert the user to enter a valid URL.
   const modalRef = useRef()
 
   const handleUrlChange = (e) => {
@@ -26,26 +26,11 @@ function HandelSheets({ updateProducts }) {
   const onCloseModal = () => {
     modalRef.current?.close()
   }
-
-  // const onCloseModal = (e) => {
-  //   const dialogDimensions = modalRef.getBoundingClientRect()
-  //   if (
-  //     e.clientX < dialogDimensions.left ||
-  //     e.clientX > dialogDimensions.right ||
-  //     e.clientY < dialogDimensions.top ||
-  //     e.clientY > dialogDimensions.bottom
-  //   ) {
-  //     // dialog.close()
-  //     modalRef.current?.close()
-  //   }
-  // }
   
   const handleFetchData = async () => {
     setIsLoading(true);
-    
-    // console.log("🚀 ~ file: HandelSheets.jsx:33 ~ handleFetchData ~ modalRef:", modalRef)
+  
     if (spreadsheetUrl === '') {
-      // alert('Please enter a valid URL');
       modalRef.current?.showModal();
       setIsLoading(false);
       return;
@@ -58,28 +43,28 @@ function HandelSheets({ updateProducts }) {
         }
         // cache: 'no-store'
       });
+      // fileBuffer is the XLSX file in binary format
       const fileBuffer = await response.arrayBuffer();
 
-      // Convert the XLSX file to JavaScript
+      // Convert the XLSX file to JavaScript. 
       const workbook = read(fileBuffer, { type: 'buffer' });
 
-      // Perform your manipulations on the workbook
+      // Perform your manipulations on the workbook:
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      // console.log("🚀 ~ file: HandelSheets.jsx:36 ~ handleFetchData ~ worksheet:", worksheet)
 
       // Get the names of the products to search in zap:
+      // productsNamesAndMyShopName is an array of arrays, each array contains the cell name and the cell value.
       const productsNamesAndMyShopName = Object.entries(worksheet).filter(
         (cell) =>
           (cell[0].includes('B') && cell[0] !== 'B1' && cell[0] !== 'B2') ||
           (cell[0].includes('D') && cell[0] !== 'D1' && cell[0] !== 'D2')
       );
 
-      // paired is an array of pairs containing the product names and shop names
+      // paired is an array of objects, each object contains the product name and the shop name.
       const paired = pairElements(productsNamesAndMyShopName);
-      // console.log('🚀 ~ handleFetchData ~ pairedObject:', paired);
 
       // Example for product name: 'טלפון סלולרי Apple iPhone 14 Pro Max 256GB אפל'
-      // Go to zap, search for the store, and return:
+      // Go to zap, search by product name, and return:
       // 1. The price of my store.
       // 2. Name & prices for top 5 by lowest price
       // 3. The placement of my store in the current check
@@ -91,19 +76,18 @@ function HandelSheets({ updateProducts }) {
 
       const allProducts = await Promise.all(promises);
       const prevProductsIndexes = getPrevProductsIndexesFromLocalStorage();
-   
+
+      // allProducts manipluation that will be written to the xlsx file:
       allProducts.forEach((product, index) => {
-        // console.log("🚀 ~ file: HandelSheets.jsx:68 ~ allProducts.forEach ~ product:", product)
         const { targetStore, firstStores } = product;
         const {siteName} = targetStore;
-        // console.log("🚀 ~ file: HandelSheets.jsx:103 ~ allProducts.forEach ~ siteName:", siteName)
         const prevIndex = prevProductsIndexes[siteName] || 0
+        // cellRow is the row number in the xlsx file that we are updating.
         const cellRow = 3 + index;
 
-        // Check if my store current position/index changed in zap:
+        // isChangedIndex is a boolean that indicates if the store index (in zap) changed from the previous check.
         const isChangedIndex = targetStore.storeIndex !== prevIndex
-        // console.log("🚀 ~ file: HandelSheets.jsx:109 ~ allProducts.forEach ~ isChangedIndex:", isChangedIndex)
-
+        
         // In the first loop/product we are updating the second row in the xslx file, cells C3, E3 ... P3, O3
         // In the second loop we are updating the third row in the xslx file, cells C3, E4 ... P4, O4
 
@@ -115,7 +99,7 @@ function HandelSheets({ updateProducts }) {
         }
         worksheet[linkCell] = linkCellObj;
     
-        // Update targetStore.totalPrice
+        // myPriceCell is the cell that contains the price of my store.
         const myPriceCell = `E${cellRow}`;
         const myPriceCellObj = {
             t: 's',
@@ -123,7 +107,7 @@ function HandelSheets({ updateProducts }) {
         }
         worksheet[myPriceCell] = myPriceCellObj;
     
-        // Update firstStores 
+        // Update firstStores (top 5 by lowest price) at cellRow: 
         firstStores.forEach((store, storeIndex) => {
             // Calculate the ASCII code for the store name column
             const storeNameColumn = String.fromCharCode(70 + storeIndex * 2); // ASCII code for 'F' is 70
@@ -135,6 +119,7 @@ function HandelSheets({ updateProducts }) {
             // 3. J-cellRow
             // 4. L-cellRow
             // 5. N-cellRow
+            // storeNameCell is the cell that contains the name of the store.
             const storeNameCell = `${storeNameColumn}${cellRow}`;
             const storeNameCellObj = {
                 t: 's',
@@ -148,6 +133,7 @@ function HandelSheets({ updateProducts }) {
             // 3. K-cellRow
             // 4. M-cellRow
             // 5. O-cellRow
+            // storePriceCell is the cell that contains the price of the store.
             const storePriceCell = `${storePriceColumn}${cellRow}`;
             const storePriceObj = {
                 t: 's',
@@ -156,7 +142,8 @@ function HandelSheets({ updateProducts }) {
             worksheet[storePriceCell] = storePriceObj;
         });
     
-        // Update targetStore.storeIndex (origin array sorted by price accending ) - In the current run of the program
+        // origin array sorted by price accending
+        // myStoreIndexCell is the cell that contains the current index of my store.
         const myStoreIndexCell = `P${cellRow}`;
         const myStoreIndexCellObj = {
             t: 's',
@@ -164,19 +151,36 @@ function HandelSheets({ updateProducts }) {
         }
         worksheet[myStoreIndexCell] = myStoreIndexCellObj;
 
-        // Update targetStore.previous index (origin array sorted by price accending ) - In the current run of the program
-        // +Update row color
+        // Update targetStore.previous index (origin array sorted by price accending)
+        // +Update row color - the color of the row in the xlsx file.
         const rowColor = isChangedIndex ? 'FFCCCB' : ''; // Set the desired row color
-        const myStorePrevIndexCell = `Q${cellRow}`;
+        // Create a custom style with the background color
+        const rowStyle = {
+          fill: {
+            type: 'pattern',
+            patternType: 'solid',
+            fgColor: { rgb: rowColor }
+          }
+        };
+        
+        // Iterate over the cells in the row
+        for (const cell in worksheet) {
+          if ( worksheet[cell].v === cellRow) {
+            // Apply the custom style to the cell
+            worksheet[cell].s = rowStyle;
+          }
+        }
 
+        // myStorePrevIndexCell is the cell that contains the previous index of my store.
+        const myStorePrevIndexCell = `Q${cellRow}`;
         const myStorePrevIndexCellObj = {
             t: 's',
-            v: `${prevIndex}${isChangedIndex ? ' Change!' : ''}`,
+            v: `${prevIndex}${isChangedIndex ? ' Change!!' : ''}`,
             s: {
               fill: {
                 type: 'pattern',
                 patternType: 'solid',
-                // fgColor: { rgb: rowColor },
+                fgColor: { rgb: rowColor },
                 bgColor: {rgb: rowColor}
               }
             }
@@ -185,18 +189,15 @@ function HandelSheets({ updateProducts }) {
         worksheet[myStorePrevIndexCell] = myStorePrevIndexCellObj;
         // const cellToUpdate = worksheet[myStorePrevIndexCell]; // Get the cell object
 
-        // Update the cell style with the desired row color
+        // Update the cell style with the desired row color - code doesnt work.. mybe we need premium version.
         worksheet[myStorePrevIndexCell].s = {
           fill: {
             type: 'pattern',
             patternType: 'solid',
-            // fgColor: { rgb: rowColor },
+            fgColor: { rgb: rowColor },
             bgColor: {rgb: rowColor}
           }
         };
-               
-        // Color diff - TODO!
-
     });
 
       // Convert the workbook back to XLSX
@@ -268,13 +269,10 @@ function HandelSheets({ updateProducts }) {
         {isLoading ? 'Uploading & Comparing...' : 'Upload & Compare in Zap'}
       </button>
       <dialog ref={modalRef} className='bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4' role="alert">
-        {/* <div className='flex justify-around'>  */}
         <p className='font-bold'>Please Enter a Valid URL</p>
         <button onClick={onCloseModal} className='btn font-bold border border-orange-700 my-2 py-1 px-4 rounded'>
           <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
-          {/* Close */}
         </button>
-        {/* </div> */}
       </dialog>
     </div>
   );
