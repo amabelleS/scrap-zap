@@ -1,51 +1,4 @@
 // 'use client'
-import { useEffect } from 'react'
-
-// import styles from './product.module.css'
-
-// let ShekelFormater = new Intl.NumberFormat('en-US', {
-//     style: 'currency',
-//     currency: 'ILS',
-// });
-
-const demoProducts = [
-    {
-        title: 'MSH-11-15 Rosso Italy',
-        link: 'https://www.zap.co.il/model.aspx?modelid=1177716', 
-        myStoreName: 'אולסייל',
-        myStorePrice: 500,
-        storeNameAtIndex1: 'אולסייל',
-        storePriceAtIndex1: 54,
-        storeNameAtIndex2: 'אולסייל',
-        storePriceAtIndex2: 54,
-        storeNameAtIndex3: 'אולסייל',
-        storePriceAtIndex3: 33,
-        storeNameAtIndex4: 'אולסייל',
-        storePriceAtIndex4: 22,
-        storeNameAtIndex5: 'אולסייל',
-        storePriceAtIndex5: 77,
-        currentIndex: 1,
-        prevIndex: 3,
-    },
-    {
-        title: 'מקרר',
-        link: 'https://www.zap.co.il/model.aspx?modelid=1177716', 
-        myStoreName: 'dsds',
-        myStorePrice: 500,
-        storeNameAtIndex1: 'אולסייל',
-        storePriceAtIndex1: 54,
-        storeNameAtIndex2: 'אולסייל',
-        storePriceAtIndex2: 54,
-        storeNameAtIndex3: 'אולסייל',
-        storePriceAtIndex3: 33,
-        storeNameAtIndex4: 'אולסייל',
-        storePriceAtIndex4: 22,
-        storeNameAtIndex5: 'אולסייל',
-        storePriceAtIndex5: 77,
-        currentIndex: 1,
-        prevIndex: 3,
-    },
-]
 
 // Table headers:
 const TableHeader = () => {
@@ -79,12 +32,11 @@ const TableHeader = () => {
   const TableRows = ({products}) => {
     return products.map((product, i) => {
       return (
-        <tr key={i} >
+        <tr key={i} className='border-b transition duration-300 ease-in-out hover:bg-gray-800 dark:border-neutral-500 dark:hover:bg-neutral-600'>
           <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-b border-gray-200 bg-white text-sm">
             {product.title}
           </th>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-          {/* <td class="px-6 py-4"> */}
+          <td className="px-6 py-4 whitespace-nowrap border-b border-gray-200 bg-white text-sm">
           <a 
               href={product.link}
               target="_blank"
@@ -143,7 +95,7 @@ const TableHeader = () => {
               target="_blank"
               rel="noreferrer"
               aria-label={product.storeEmail}
-              title={`Open ${product.storeEmail} in a new tab`}
+              title='Open email in a new tab'
               >
               {product.storeEmail}
           </a>
@@ -154,19 +106,16 @@ const TableHeader = () => {
   };
 
 const Products = ({ products }) => {
-    
-    useEffect(() => {
-        console.log("🚀 ~ file: Products.jsx:4 ~ Products ~ products:", products)
-    }, [products])
 
   return (
     <div>
-        <h3 className="mt-12 mb-12 text-3xl text-center text-white font-bold">Prodacts🛒</h3>
+        <h3 className="mt-12 mb-12 text-2xl text-center text-white font-bold">Prodacts🛒</h3>
+        {/* <div className="inline-block overflow-hidden min-w-full py-2 sm:px-6 lg:px-8"> */}
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        {/* <div className="relative overflow-x-auto"> */}
+        {/* <table className='min-w-full text-left text-sm font-light'> */}
         <table className='w-full text-sm text-left text-gray-500 dark:text-gray-400'>
             <tbody>
-              <tr className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50     dark:hover:bg-gray-600'>
+              <tr className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'>
                 <TableHeader/>
               </tr>
               {products && <TableRows products={products}/>}
