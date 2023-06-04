@@ -4,13 +4,13 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 import HandelSheets from './components/HandelSheets'
+// TODO: Fix bugs with other two components to manipulate free syles?
 // import HandelSheetsWithEcxel from './components/HandelSheetsWithEcxel';
 // import HandelSheetsWithRenderer from './components/HandelSheetsWithRenderer';
 import Products from './components/products/Products';
 import { storeCurrentProductIndexesToLocalStorage, getPrevProductsIndexesFromLocalStorage } from '@/lib/handelLocalStorage';
 
 export default function Home() {
-  // const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([])
 
   useEffect(() => {
@@ -35,13 +35,10 @@ export default function Home() {
 
     // Store the current product ratings in local storage
     storeCurrentProductIndexesToLocalStorage(currentProductsIndexes);
-
-    // setProducts(products);
   };
   
   return (
     <main className={`px-6 mx-auto`}>
-    {/* <main className={`${inter.className} flex min-h-screen flex-col items-center justify-around p-24`}> */}
       <h1 className="mt-12 mb-12 text-3xl text-center text-white font-bold">Zap-Compare🪄</h1>
       {/* <HandelSheetsWithRenderer updateProducts={updateProducts}/> */}
       {/* <HandelSheetsWithEcxel updateProducts={updateProducts}/> */}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 // Table headers:
 const TableHeader = () => {
@@ -29,84 +29,84 @@ const TableHeader = () => {
     });
   }; 
 
-  const TableRows = ({products}) => {
-    return products.map((product, i) => {
-      return (
-        <tr key={i} className='border-b transition duration-300 ease-in-out hover:bg-gray-800 dark:border-neutral-500 dark:hover:bg-neutral-600'>
-          <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-b border-gray-200 bg-white text-sm">
-            {product.title}
-          </th>
-          <td className="px-6 py-4 whitespace-nowrap border-b border-gray-200 bg-white text-sm">
-          <a 
-              href={product.link}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={product.title}
-              title={`Open ${product.title} in a new tab`}
-              >
-              {product.link}
-          </a>
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.myStoreName}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.myStorePrice}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.storeNameAtIndex1}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.storePriceAtIndex1}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.storeNameAtIndex2}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.storePriceAtIndex2}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.storeNameAtIndex3}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.storePriceAtIndex3}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.storeNameAtIndex4}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.storePriceAtIndex4}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.storeNameAtIndex5}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.storePriceAtIndex5}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.currentIndex}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-            {product.prevIndex}
-          </td>
-          <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-          <a 
-              href={`mailto:${product.storeEmail}?subject=Zap Rating Update!! The Position of ${product.myStoreName} Has Changed!&body=Your pervious position in zap website was ${product.prevIndex} and now it has changed to ${product.currentIndex}`}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={product.storeEmail}
-              title='Open email in a new tab'
-              >
-              {product.storeEmail}
-          </a>
-          </td>
-        </tr>
-      );
-    });
-  };
+const TableRows = ({products}) => {
+  return products.map((product, i) => {
+    return (
+      <tr key={i} className='border-b transition duration-300 ease-in-out hover:bg-gray-800 dark:border-neutral-500 dark:hover:bg-neutral-600'>
+        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-b border-gray-200 bg-white text-sm">
+          {product.title}
+        </th>
+        <td className="px-6 py-4 whitespace-nowrap border-b border-gray-200 bg-white text-sm">
+        <a 
+            href={product.link}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={product.title}
+            title={`Open ${product.title} in a new tab`}
+            >
+            {product.link}
+        </a>
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.myStoreName}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.myStorePrice}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.storeNameAtIndex1}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.storePriceAtIndex1}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.storeNameAtIndex2}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.storePriceAtIndex2}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.storeNameAtIndex3}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.storePriceAtIndex3}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.storeNameAtIndex4}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.storePriceAtIndex4}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.storeNameAtIndex5}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.storePriceAtIndex5}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.currentIndex}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {product.prevIndex}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+        {/* Send email to the store owner:*/}
+        <a 
+            href={`mailto:${product.storeEmail}?subject=Zap Rating Update!! The Position of ${product.myStoreName} Has Changed!&body=Your pervious position in zap website was ${product.prevIndex} and now it has changed to ${product.currentIndex}`}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={product.storeEmail}
+            title='Open email in a new tab'
+            >
+            {product.storeEmail}
+        </a>
+        </td>
+      </tr>
+    );
+  });
+};
 
 const Products = ({ products }) => {
-console.log("🚀 ~ file: Products.jsx:107 ~ Products ~ products:", products)
 const [isChangedProducts, setIsChangedProducts] = useState(false);
 
 useEffect(() => {
@@ -122,7 +122,6 @@ if (!isChangedProducts) {
 return (
     <div>
         <h3 className="mt-12 mb-12 text-2xl text-center text-white font-bold">Prodacts🛒</h3>
-        {/* <div className="inline-block overflow-hidden min-w-full py-2 sm:px-6 lg:px-8"> */}
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className='w-full text-sm text-left text-gray-500 dark:text-gray-400'>
             <tbody>

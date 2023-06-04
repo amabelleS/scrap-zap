@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { read, write } from 'xlsx';
-// import { useRouter } from 'next/navigation';
-// import { revalidatePath } from 'next/cache';
 import pairElements from '@/lib/pairElements';
 import scrapeZapWebsite from '@/lib/scrapeZapWebsite';
 import { getPrevProductsIndexesFromLocalStorage } from '@/lib/handelLocalStorage';
@@ -26,21 +24,6 @@ function HandelSheets({ updateProducts }) {
   const onCloseModal = () => {
     modalRef.current?.close()
   }
-
-  useEffect(() => {
-    const listener = event => {
-      if (event.code === "Enter" || event.code === "NumpadEnter") {
-        console.log("Enter key was pressed. Run your function.");
-        event.preventDefault();
-        // callMyFunction();
-        handleFetchData();
-      }
-    };
-    document.addEventListener("keydown", listener);
-    return () => {
-      document.removeEventListener("keydown", listener);
-    };
-  }, []);
   
   const handleFetchData = async () => {
     setIsLoading(true);
@@ -157,7 +140,6 @@ function HandelSheets({ updateProducts }) {
             worksheet[storePriceCell] = storePriceObj;
         });
     
-        // origin array sorted by price accending
         // myStoreIndexCell is the cell that contains the current index of my store.
         const myStoreIndexCell = `P${cellRow}`;
         const myStoreIndexCellObj = {
@@ -167,7 +149,7 @@ function HandelSheets({ updateProducts }) {
         worksheet[myStoreIndexCell] = myStoreIndexCellObj;
 
         // Update targetStore.previous index (origin array sorted by price accending)
-        // +Update row color - the color of the row in the xlsx file.
+        // +Update row color - the color of the row in the xlsx file. - Possible only in the pro version of the library :(
         const rowColor = isChangedIndex ? 'FFCCCB' : ''; // Set the desired row color
         // Create a custom style with the background color
         const rowStyle = {
@@ -178,18 +160,21 @@ function HandelSheets({ updateProducts }) {
           }
         };
         
-        // Iterate over the cells in the row
-        for (const cell in worksheet) {
-          if ( worksheet[cell].v === cellRow) {
-            // Apply the custom style to the cell
-            worksheet[cell].s = rowStyle;
+        if (isChangedIndex) {
+          // Iterate over the cells in the row
+          for (const cell in worksheet) {
+            if ( worksheet[cell].v === cellRow) {
+              // Apply the custom style to the cell
+              worksheet[cell].s = rowStyle;
+            }
           }
         }
-
+        
         // myStorePrevIndexCell is the cell that contains the previous index of my store.
         const myStorePrevIndexCell = `Q${cellRow}`;
         const myStorePrevIndexCellObj = {
             t: 's',
+            // instead of coloring red, we will add a string that says 'Change!!' if the index changed from the previous check.
             v: `${prevIndex}${isChangedIndex ? ' Change!!' : ''}`,
             s: {
               fill: {
@@ -200,11 +185,9 @@ function HandelSheets({ updateProducts }) {
               }
             }
         }
-
         worksheet[myStorePrevIndexCell] = myStorePrevIndexCellObj;
-        // const cellToUpdate = worksheet[myStorePrevIndexCell]; // Get the cell object
 
-        // Update the cell style with the desired row color - code doesnt work.. mybe we need premium version.
+        // Update the cell style with the desired row color - code doesnt work.. we need premium version.
         worksheet[myStorePrevIndexCell].s = {
           fill: {
             type: 'pattern',
@@ -259,8 +242,6 @@ function HandelSheets({ updateProducts }) {
         link.click();
       }
 
-      // setIsLoading(false);
-    //   setSpreadsheetUrl('');
     } catch (error) {
       console.error('Error fetching or manipulating the file:', error);
     }
