@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { read, write } from 'xlsx';
 // import { useRouter } from 'next/navigation';
 // import { revalidatePath } from 'next/cache';
@@ -26,6 +26,21 @@ function HandelSheets({ updateProducts }) {
   const onCloseModal = () => {
     modalRef.current?.close()
   }
+
+  useEffect(() => {
+    const listener = event => {
+      if (event.code === "Enter" || event.code === "NumpadEnter") {
+        console.log("Enter key was pressed. Run your function.");
+        event.preventDefault();
+        // callMyFunction();
+        handleFetchData();
+      }
+    };
+    document.addEventListener("keydown", listener);
+    return () => {
+      document.removeEventListener("keydown", listener);
+    };
+  }, []);
   
   const handleFetchData = async () => {
     setIsLoading(true);
