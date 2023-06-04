@@ -92,7 +92,7 @@ const TableRows = ({products}) => {
         <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
         {/* Send email to the store owner:*/}
         <a 
-            href={`mailto:${product.storeEmail}?subject=Zap Rating Update!! The Position of ${product.myStoreName} Has Changed!&body=Your pervious position in zap website was ${product.prevIndex} and now it has changed to ${product.currentIndex}`}
+            href={`mailto:${product.storeEmail}?subject=Zap Rating Update!! The Position of Your ${product.title} - Seller: ${product.myStoreName} Has Changed!&body=Your pervious position in zap website was ${product.prevIndex} and now it has changed to ${product.currentIndex}`}
             target="_blank"
             rel="noreferrer"
             aria-label={product.storeEmail}
