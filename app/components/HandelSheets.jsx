@@ -11,7 +11,7 @@ let ShekelFormater = new Intl.NumberFormat('en-US', {
 
 function HandelSheets({ updateProducts }) {
   // spreadSheetUrl is the url of the spreadsheet that the user enters.
-  const [spreadsheetUrl, setSpreadsheetUrl] = useState('');
+  const [spreadsheetUrl, setSpreadsheetUrl] = useState("https://docs.google.com/spreadsheets/d/14CGd5wIP_NSRR_zbL3zWnsZm95GffUFUj69lIRXORkM/edit?pli=1#gid=1839852866");
   const [isLoading, setIsLoading] = useState(false);
 
   // A simple modal with the dialog element to alert the user to enter a valid URL.
@@ -255,7 +255,8 @@ function HandelSheets({ updateProducts }) {
         type="text"
         value={spreadsheetUrl}
         onChange={handleUrlChange}
-        placeholder="Enter link to Google Sheet"
+        // placeholder="Enter link to Google Sheet"
+        placeholder="https://docs.google.com/spreadsheets/d/14CGd5wIP_NSRR_zbL3zWnsZm95GffUFUj69lIRXORkM/edit?pli=1#gid=1839852866"
       />
       <button
         className="p-2 text-xl rounded-xl bg-slate-300 ml-2 font-bold"

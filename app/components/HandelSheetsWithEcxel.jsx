@@ -93,7 +93,9 @@ function HandelSheets({ updateProducts }) {
         type="text"
         value={spreadsheetUrl}
         onChange={handleUrlChange}
-        placeholder="Enter link to Google Sheet"
+        // placeholder="Enter link to Google Sheet"
+        placeholder="https://docs.google.com/spreadsheets/d/14CGd5wIP_NSRR_zbL3zWnsZm95GffUFUj69lIRXORkM/edit?pli=1#gid=1839852866"
+        // defaultValue='https://docs.google.com/spreadsheets/d/14CGd5wIP_NSRR_zbL3zWnsZm95GffUFUj69lIRXORkM/edit?pli=1#gid=1839852866'
       />
       <button
         className="p-2 text-xl rounded-xl bg-slate-300 ml-2 font-bold"
